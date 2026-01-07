@@ -1,0 +1,200 @@
+{
+  "version": "1.0.0",
+  "description": "Semantic codes for ultra-compressed AI agent output",
+
+  "status": {
+    "P": {
+      "code": "P",
+      "name": "PASS",
+      "description": "All tests passing",
+      "action": "none"
+    },
+    "F": {
+      "code": "F",
+      "name": "FAIL",
+      "description": "Tests failing, investigation needed",
+      "action": "analyze"
+    },
+    "X": {
+      "code": "X",
+      "name": "FIXABLE",
+      "description": "Auto-fix available",
+      "action": "fix"
+    },
+    "B": {
+      "code": "B",
+      "name": "BLOCKED",
+      "description": "Infrastructure issue",
+      "action": "investigate"
+    }
+  },
+
+  "categories": {
+    "BC": {
+      "code": "BC",
+      "name": "browser_compat",
+      "description": "Browser compatibility error",
+      "pattern": "TypeORM/Node.js API used in browser"
+    },
+    "TO": {
+      "code": "TO",
+      "name": "timeout",
+      "description": "Test timeout",
+      "pattern": "Test exceeded timeout threshold"
+    },
+    "NF": {
+      "code": "NF",
+      "name": "element_not_found",
+      "description": "Element not found in DOM",
+      "pattern": "Locator/selector did not match"
+    },
+    "NE": {
+      "code": "NE",
+      "name": "network_error",
+      "description": "Network/fetch error",
+      "pattern": "API call or network request failed"
+    },
+    "SE": {
+      "code": "SE",
+      "name": "server_error",
+      "description": "Server/backend error",
+      "pattern": "500 status or backend exception"
+    },
+    "AE": {
+      "code": "AE",
+      "name": "assertion_error",
+      "description": "Test assertion failed",
+      "pattern": "expect() assertion mismatch"
+    },
+    "PE": {
+      "code": "PE",
+      "name": "permission_error",
+      "description": "Permission/auth error",
+      "pattern": "401/403 or access denied"
+    },
+    "DE": {
+      "code": "DE",
+      "name": "database_error",
+      "description": "Database error",
+      "pattern": "Connection or query error"
+    },
+    "UN": {
+      "code": "UN",
+      "name": "unknown",
+      "description": "Unknown error type",
+      "pattern": "Unclassified error"
+    }
+  },
+
+  "actions": {
+    "AF": {
+      "code": "AF",
+      "name": "auto_fix",
+      "description": "Apply auto-fix",
+      "command": "npm run e2e:fix -- --apply"
+    },
+    "RA": {
+      "code": "RA",
+      "name": "re_analyze",
+      "description": "Re-run analysis",
+      "command": "npm run e2e:analyze"
+    },
+    "RT": {
+      "code": "RT",
+      "name": "re_test",
+      "description": "Re-run tests",
+      "command": "npm run e2e:run"
+    },
+    "DA": {
+      "code": "DA",
+      "name": "deep_analyze",
+      "description": "Deep analysis with root cause",
+      "command": "npm run e2e:ai -- --deep"
+    },
+    "MF": {
+      "code": "MF",
+      "name": "manual_fix",
+      "description": "Manual fix required",
+      "command": null
+    },
+    "CI": {
+      "code": "CI",
+      "name": "check_infra",
+      "description": "Check infrastructure",
+      "command": "docker compose ps"
+    }
+  },
+
+  "fixes": {
+    "LI": {
+      "code": "LI",
+      "name": "lazy_initialization",
+      "description": "Convert singleton to lazy initialization",
+      "template": "lazy-initialization"
+    },
+    "DI": {
+      "code": "DI",
+      "name": "dynamic_import",
+      "description": "Use dynamic import for browser safety",
+      "template": "dynamic-import"
+    },
+    "BG": {
+      "code": "BG",
+      "name": "browser_guard",
+      "description": "Add isBrowser guard",
+      "template": "browser-guard"
+    },
+    "DC": {
+      "code": "DC",
+      "name": "dbclient_migration",
+      "description": "Migrate to DBClient pattern",
+      "template": "dbclient-migration"
+    },
+    "WT": {
+      "code": "WT",
+      "name": "wait_timeout",
+      "description": "Increase wait timeout",
+      "template": "timeout-increase"
+    },
+    "RL": {
+      "code": "RL",
+      "name": "retry_logic",
+      "description": "Add retry logic",
+      "template": "retry-logic"
+    }
+  },
+
+  "errorTaxonomy": {
+    "1.0.0": "Browser Compatibility",
+    "1.1.0": "TypeORM",
+    "1.1.1": "AppDataSource.getRepository in browser",
+    "1.1.2": "Repository instantiation",
+    "1.1.3": "DataSource initialization",
+    "1.2.0": "Node.js APIs",
+    "1.2.1": "module.createRequire",
+    "1.2.2": "fs module",
+    "1.2.3": "path module",
+    "2.0.0": "Test Reliability",
+    "2.1.0": "Timeout",
+    "2.1.1": "Navigation timeout",
+    "2.1.2": "Action timeout",
+    "2.1.3": "Expect timeout",
+    "2.2.0": "Element Not Found",
+    "2.2.1": "Selector mismatch",
+    "2.2.2": "Timing issue",
+    "3.0.0": "Infrastructure",
+    "3.1.0": "Network",
+    "3.1.1": "Connection refused",
+    "3.1.2": "Fetch failed",
+    "3.2.0": "Server Error",
+    "3.2.1": "500 response",
+    "3.2.2": "Database connection"
+  },
+
+  "formatTemplates": {
+    "ultraCompact": "{status}:{failed}/{total}|{category}:{count}@{fix}|{action}",
+    "compact": "{status}:{failed}|{category}:{count}|{action}",
+    "minimal": "{status}:{failed}",
+    "taxonomyCompact": "{status}:{failed}|{taxonomyCode}:{count}|{fix}"
+  }
+}

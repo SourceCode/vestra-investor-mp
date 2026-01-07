@@ -1,0 +1,312 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "version": "1.0.0",
+  "lastUpdated": "2026-01-02",
+  "patterns": [
+    {
+      "id": "browser-compat-typeorm",
+      "name": "TypeORM Browser Compatibility",
+      "category": "browser_compat",
+      "severity": "critical",
+      "patterns": [
+        "AppDataSource\\.getRepository cannot be used in the browser",
+        "Cannot use TypeORM in browser context",
+        "DataSource is not initialized",
+        "AppDataSource\\.\\w+ cannot be used in the browser",
+        "getRepository.*cannot be called"
+      ],
+      "root_cause": "Service uses TypeORM directly instead of DBClient or tRPC",
+      "import_trace_required": true,
+      "fix_available": true,
+      "fix_template": "lazy-initialization",
+      "semantic_code": "BC",
+      "documentation": "Convert eager singleton to lazy initialization pattern"
+    },
+    {
+      "id": "browser-compat-require",
+      "name": "Node.js require() in Browser",
+      "category": "browser_compat",
+      "severity": "critical",
+      "patterns": [
+        "module\\.createRequire is not a function",
+        "require is not defined",
+        "Cannot find module",
+        "ReferenceError: require is not defined"
+      ],
+      "root_cause": "Node.js-only API used in browser context",
+      "import_trace_required": true,
+      "fix_available": true,
+      "fix_template": "dynamic-import",
+      "semantic_code": "BC",
+      "documentation": "Use dynamic imports or browser-safe alternatives"
+    },
+    {
+      "id": "browser-compat-singleton",
+      "name": "Singleton Initialization Error",
+      "category": "browser_compat",
+      "severity": "critical",
+      "patterns": [
+        "export const \\w+Service = new",
+        "at http://.*\\.ts:\\d+:\\d+$",
+        "ReferenceError.*at module load"
+      ],
+      "root_cause": "Singleton service instantiated at module load time in browser",
+      "import_trace_required": true,
+      "fix_available": true,
+      "fix_template": "lazy-initialization",
+      "semantic_code": "BC",
+      "documentation": "Convert eager singleton to lazy getter pattern"
+    },
+    {
+      "id": "browser-compat-fs",
+      "name": "Node.js fs Module in Browser",
+      "category": "browser_compat",
+      "severity": "critical",
+      "patterns": [
+        "fs\\.readFileSync",
+        "fs\\.writeFileSync",
+        "fs\\.existsSync",
+        "Cannot resolve 'fs'"
+      ],
+      "root_cause": "Node.js fs module used in browser context",
+      "import_trace_required": true,
+      "fix_available": true,
+      "fix_template": "browser-guard",
+      "semantic_code": "BC",
+      "documentation": "Add isBrowser guard or use browser-safe file handling"
+    },
+    {
+      "id": "selector-timeout",
+      "name": "Selector Timeout",
+      "category": "timeout",
+      "severity": "medium",
+      "patterns": [
+        "Timeout \\d+ms exceeded",
+        "waiting for locator",
+        "locator\\.click.*Target closed",
+        "Test timeout of \\d+ms exceeded"
+      ],
+      "root_cause": "Element not found or not interactive within timeout",
+      "import_trace_required": false,
+      "fix_available": false,
+      "semantic_code": "TO",
+      "suggestions": [
+        "Increase timeout for slow operations",
+        "Add explicit wait for element visibility",
+        "Check if selector is correct",
+        "Verify page navigation completed"
+      ]
+    },
+    {
+      "id": "element-not-found",
+      "name": "Element Not Found",
+      "category": "element_not_found",
+      "severity": "medium",
+      "patterns": [
+        "Locator: .+\\nExpected: visible",
+        "waiting for locator\\('([^']+)'\\)",
+        "locator\\.click: Target closed",
+        "Element is not attached to the DOM",
+        "Element is not visible"
+      ],
+      "root_cause": "DOM element missing or not visible",
+      "import_trace_required": false,
+      "fix_available": false,
+      "semantic_code": "NF",
+      "suggestions": [
+        "Verify selector matches current DOM structure",
+        "Check if element is conditionally rendered",
+        "Review error-context.md for DOM snapshot",
+        "Ensure page has fully loaded before interaction"
+      ]
+    },
+    {
+      "id": "network-connection-refused",
+      "name": "Network Connection Refused",
+      "category": "network",
+      "severity": "high",
+      "patterns": [
+        "net::ERR_CONNECTION_REFUSED",
+        "ECONNREFUSED",
+        "connect ECONNREFUSED"
+      ],
+      "root_cause": "Backend server not running or unreachable",
+      "import_trace_required": false,
+      "fix_available": false,
+      "semantic_code": "NE",
+      "suggestions": [
+        "Verify dev server is running on correct port",
+        "Check Docker containers are up: docker-compose ps",
+        "Verify database connection",
+        "Check firewall/network settings"
+      ]
+    },
+    {
+      "id": "network-fetch-failed",
+      "name": "Fetch Request Failed",
+      "category": "network",
+      "severity": "high",
+      "patterns": [
+        "Failed to fetch",
+        "NetworkError",
+        "net::ERR_NETWORK_CHANGED",
+        "fetch failed"
+      ],
+      "root_cause": "Network request failed during test execution",
+      "import_trace_required": false,
+      "fix_available": false,
+      "semantic_code": "NE",
+      "suggestions": [
+        "Check API endpoint availability",
+        "Verify network connectivity",
+        "Review request/response in browser devtools"
+      ]
+    },
+    {
+      "id": "server-error-500",
+      "name": "Server Error 500",
+      "category": "server_error",
+      "severity": "high",
+      "patterns": [
+        "status of 500",
+        "Internal Server Error",
+        "500 Internal Server Error",
+        "Server returned 500"
+      ],
+      "root_cause": "Backend server encountered an error",
+      "import_trace_required": false,
+      "fix_available": false,
+      "semantic_code": "SE",
+      "suggestions": [
+        "Check server logs for stack trace",
+        "Verify database migrations are up to date",
+        "Check for null pointer or undefined errors",
+        "Review API handler error handling"
+      ]
+    },
+    {
+      "id": "react-error-boundary",
+      "name": "React Error Boundary Triggered",
+      "category": "server_error",
+      "severity": "critical",
+      "patterns": [
+        "System Error",
+        "critical error",
+        "Restart System",
+        "Something went wrong",
+        "Error boundary"
+      ],
+      "root_cause": "Unhandled exception in React component tree",
+      "import_trace_required": true,
+      "fix_available": false,
+      "semantic_code": "SE",
+      "suggestions": [
+        "Check browser console for original error",
+        "Review error-context.md for DOM snapshot",
+        "Look for component rendering errors",
+        "Check for undefined props or state"
+      ]
+    },
+    {
+      "id": "assertion-toBe",
+      "name": "Assertion Failure - toBe",
+      "category": "assertion",
+      "severity": "medium",
+      "patterns": [
+        "expect\\(.*\\)\\.toBe",
+        "Expected:.*Received:",
+        "AssertionError"
+      ],
+      "root_cause": "Test assertion failed - value mismatch",
+      "import_trace_required": false,
+      "fix_available": false,
+      "semantic_code": "AE",
+      "suggestions": [
+        "Review expected vs actual values",
+        "Check if test data is correct",
+        "Verify application state before assertion"
+      ]
+    },
+    {
+      "id": "assertion-toBeVisible",
+      "name": "Assertion Failure - Visibility",
+      "category": "assertion",
+      "severity": "medium",
+      "patterns": [
+        "toBeVisible",
+        "toBeHidden",
+        "Expected: visible.*Received: hidden"
+      ],
+      "root_cause": "Element visibility assertion failed",
+      "import_trace_required": false,
+      "fix_available": false,
+      "semantic_code": "AE",
+      "suggestions": [
+        "Check if element is conditionally displayed",
+        "Verify CSS visibility/display properties",
+        "Check for loading states"
+      ]
+    },
+    {
+      "id": "hydration-mismatch",
+      "name": "React Hydration Mismatch",
+      "category": "browser_compat",
+      "severity": "medium",
+      "patterns": [
+        "Hydration failed",
+        "Text content does not match",
+        "Minified React error"
+      ],
+      "root_cause": "Server-rendered HTML differs from client render",
+      "import_trace_required": false,
+      "fix_available": false,
+      "semantic_code": "BC",
+      "suggestions": [
+        "Check for browser-only code in initial render",
+        "Verify consistent data between server and client",
+        "Use useEffect for browser-only operations"
+      ]
+    },
+    {
+      "id": "playwright-browser-closed",
+      "name": "Browser Unexpectedly Closed",
+      "category": "infrastructure",
+      "severity": "high",
+      "patterns": [
+        "Browser closed",
+        "Target page, context or browser has been closed",
+        "browserType.launch: Browser closed"
+      ],
+      "root_cause": "Test browser process terminated unexpectedly",
+      "import_trace_required": false,
+      "fix_available": false,
+      "semantic_code": "SE",
+      "suggestions": [
+        "Check for memory issues",
+        "Verify browser dependencies are installed",
+        "Try running with --headed to debug",
+        "Check system resources (CPU/RAM)"
+      ]
+    },
+    {
+      "id": "strict-mode-violation",
+      "name": "Playwright Strict Mode Violation",
+      "category": "element_not_found",
+      "severity": "medium",
+      "patterns": [
+        "strict mode violation",
+        "resolved to \\d+ elements",
+        "locator resolved to multiple elements"
+      ],
+      "root_cause": "Selector matched multiple elements when one was expected",
+      "import_trace_required": false,
+      "fix_available": false,
+      "semantic_code": "NF",
+      "suggestions": [
+        "Make selector more specific",
+        "Use nth() to select specific element",
+        "Add data-testid for unique identification"
+      ]
+    }
+  ]
+}

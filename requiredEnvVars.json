@@ -1,0 +1,5 @@
+{
+    "requiredEnvVars": [
+        "DATADOG_API_KEY"
+    ]
+}

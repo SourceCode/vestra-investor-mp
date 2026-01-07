@@ -1,0 +1,16 @@
+{
+    "seed": 12345,
+    "counts": {
+        "users": 20,
+        "accounts": 5,
+        "contacts": 200,
+        "properties": 150,
+        "deals": 100,
+        "tasks": 300,
+        "events": 100
+    },
+    "settings": {
+        "static_markets": true,
+        "use_deterministic_uuids_for_lookups": true
+    }
+}

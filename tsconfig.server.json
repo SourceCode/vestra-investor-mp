@@ -1,0 +1,56 @@
+{
+    "extends": "./tsconfig.json",
+    "compilerOptions": {
+        "noEmit": false,
+        "allowImportingTsExtensions": false,
+        "outDir": "dist-swc",
+        "module": "esnext",
+        "target": "ES2022",
+        "experimentalDecorators": true,
+        "emitDecoratorMetadata": true,
+        "useDefineForClassFields": false,
+        "strictPropertyInitialization": false,
+        "noImplicitAny": false,
+        "strict": false,
+        "baseUrl": ".",
+        "rootDir": ".",
+        "paths": {
+            "@/apps/*": [
+                "src/empty.ts"
+            ],
+            "@/components/*": [
+                "src/empty.ts"
+            ],
+            "@/hooks/*": [
+                "src/empty.ts"
+            ],
+            "@/app/*": [
+                "src/empty.ts"
+            ],
+            "@/types/*": [
+                "src/lib/types/*"
+            ],
+            "@/*": [
+                "src/*"
+            ]
+        }
+    },
+    "include": [
+        "src/server/**/*",
+        "src/db/**/*",
+        "src/services/**/*",
+        "src/lib/**/*",
+        "src/utils/**/*"
+    ],
+    "exclude": [
+        "node_modules",
+        "tests",
+        "dist",
+        "dist-server",
+        "dist-swc",
+        "**/*.test.ts",
+        "**/*.spec.ts",
+        "src/apps/**/*",
+        "src/components/**/*"
+    ]
+}

@@ -1,0 +1,146 @@
+{
+  "version": "1.0.0",
+  "templates": [
+    {
+      "id": "lazy-initialization",
+      "name": "Convert Singleton to Lazy Initialization",
+      "description": "Converts eager singleton exports to lazy getter functions",
+      "patterns": [
+        {
+          "match": "export const (\\w+) = new (\\w+)\\(\\);",
+          "replace": "let _$1: $2 | null = null;\n\nexport function get$2(): $2 {\n  if (!_$1) {\n    _$1 = new $2();\n  }\n  return _$1;\n}"
+        },
+        {
+          "match": "export const (\\w+)Service = new (\\w+)Service\\(\\);",
+          "replace": "let _$1Service: $2Service | null = null;\n\nexport function get$2Service(): $2Service {\n  if (!_$1Service) {\n    _$1Service = new $2Service();\n  }\n  return _$1Service;\n}"
+        }
+      ],
+      "importUpdates": [
+        {
+          "match": "import { (\\w+)Service } from",
+          "replace": "import { get$1Service } from"
+        },
+        {
+          "match": "(\\w+)Service\\.",
+          "replace": "get$1Service()."
+        }
+      ],
+      "validation": "Function call pattern: get*Service()"
+    },
+    {
+      "id": "dynamic-import",
+      "name": "Convert require to Dynamic Import",
+      "description": "Converts Node.js require to browser-safe dynamic import",
+      "patterns": [
+        {
+          "match": "const (\\w+) = require\\('([^']+)'\\);",
+          "replace": "const $1 = await import('$2');"
+        },
+        {
+          "match": "const { ([^}]+) } = require\\('([^']+)'\\);",
+          "replace": "const { $1 } = await import('$2');"
+        }
+      ],
+      "asyncWrapper": true,
+      "validation": "Ensure containing function is async"
+    },
+    {
+      "id": "browser-env-check",
+      "name": "Add Browser Environment Check",
+      "description": "Wraps server-only code with environment check",
+      "patterns": [
+        {
+          "match": "(AppDataSource\\.getRepository\\([^)]+\\))",
+          "replace": "typeof window === 'undefined' ? $1 : null"
+        }
+      ],
+      "validation": "Check handles null case properly"
+    },
+    {
+      "id": "dbclient-migration",
+      "name": "Migrate to DBClient",
+      "description": "Converts direct TypeORM usage to DBClient",
+      "patterns": [
+        {
+          "match": "AppDataSource\\.getRepository\\((\\w+)\\)",
+          "replace": "DBClient.getRepository($1)"
+        },
+        {
+          "match": "import { AppDataSource } from ['\"]@/db/data-source['\"]",
+          "replace": "import { DBClient } from '@/db/client'"
+        }
+      ],
+      "validation": "Verify DBClient import exists"
+    },
+    {
+      "id": "repository-injection",
+      "name": "Convert to Repository Injection",
+      "description": "Replaces direct repository instantiation with injection",
+      "patterns": [
+        {
+          "match": "this\\.(\\w+)Repository = new (\\w+)Repository\\(\\);",
+          "replace": "// Repository should be injected via constructor\n  // this.$1Repository: $2Repository"
+        }
+      ],
+      "manualSteps": [
+        "Add repository parameter to constructor",
+        "Update all callers to pass repository instance"
+      ],
+      "validation": "Constructor signature updated"
+    },
+    {
+      "id": "typeorm-import-guard",
+      "name": "Guard TypeORM Imports",
+      "description": "Wraps TypeORM imports with server-only guard",
+      "patterns": [
+        {
+          "match": "import { (DataSource|Repository|Entity[^}]*) } from 'typeorm';",
+          "replace": "// Server-only import - use lazy loading\nconst getTypeORM = async () => typeof window === 'undefined' ? await import('typeorm') : null;"
+        }
+      ],
+      "manualSteps": [
+        "Update code to use lazy TypeORM access",
+        "Handle null case for browser environment"
+      ],
+      "validation": "TypeORM only loaded on server"
+    },
+    {
+      "id": "service-getter-pattern",
+      "name": "Convert Service to Getter Pattern",
+      "description": "Converts service class with static methods to getter pattern for lazy loading",
+      "patterns": [
+        {
+          "match": "export class (\\w+)Service \\{",
+          "replace": "class $1ServiceImpl {"
+        }
+      ],
+      "postPatterns": [
+        {
+          "append": "\n\nlet _$1Service: $1ServiceImpl | null = null;\n\nexport function get$1Service(): $1ServiceImpl {\n  if (!_$1Service) {\n    _$1Service = new $1ServiceImpl();\n  }\n  return _$1Service;\n}\n\nexport type $1Service = $1ServiceImpl;"
+        }
+      ],
+      "validation": "Export getter function instead of class"
+    },
+    {
+      "id": "fs-to-fetch",
+      "name": "Convert fs.readFile to fetch",
+      "description": "Converts Node.js file reading to browser-compatible fetch",
+      "patterns": [
+        {
+          "match": "fs\\.readFileSync\\('([^']+)', 'utf-?8'\\)",
+          "replace": "await (await fetch('$1')).text()"
+        },
+        {
+          "match": "fs\\.readFileSync\\(([^,]+), 'utf-?8'\\)",
+          "replace": "await (await fetch($1)).text()"
+        }
+      ],
+      "asyncWrapper": true,
+      "manualSteps": [
+        "Ensure file is accessible via HTTP",
+        "Handle fetch errors appropriately"
+      ],
+      "validation": "Function is async and handles errors"
+    }
+  ]
+}

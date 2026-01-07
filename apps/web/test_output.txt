@@ -1,0 +1,34 @@
+
+> homify-web@0.0.0 test
+> jest src/components/AppShell.client.test.tsx
+
+FAIL client src/components/AppShell.client.test.tsx
+  AppShell Accessibility
+    ✕ should pass basic axe check (27 ms)
+
+  ● AppShell Accessibility › should pass basic axe check
+
+    TypeError: Cannot read properties of undefined (reading 'toLowerCase')
+
+      76 |             </main>
+      77 |         );
+    > 78 |         const results = await axe(container);
+         |                                  ^
+      79 |         expect(results).toHaveNoViolations();
+      80 |     });
+      81 | });
+
+      at flattenTree (../../node_modules/jest-axe/node_modules/axe-core/axe.js:18325:37)
+      at ../../node_modules/jest-axe/index.js:79:15
+      at axe (../../node_modules/jest-axe/index.js:78:12)
+      at Object.<anonymous> (src/components/AppShell.client.test.tsx:78:34)
+
+Test Suites: 1 failed, 1 total
+Tests:       1 failed, 1 total
+Snapshots:   0 total
+Time:        1.164 s
+Ran all test suites matching src/components/AppShell.client.test.tsx.
+npm ERR! Lifecycle script `test` failed with error: 
+npm ERR! Error: command failed 
+npm ERR!   in workspace: homify-web@0.0.0 
+npm ERR!   at location: /Volumes/SecondDrive/code2/homify/homify-v1/apps/web 

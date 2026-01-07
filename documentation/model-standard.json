@@ -1,0 +1,13 @@
+{
+    "id": "string",
+    "reference": [
+        {
+            "key": "string",
+            "value": "string"
+        }
+    ],
+    "create_date": "ISO-8601 timestamp",
+    "update_date": "ISO-8601 timestamp",
+    "version_num": "integer",
+    "version_note": "string | null"
+}
